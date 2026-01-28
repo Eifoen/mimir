@@ -2418,7 +2418,7 @@ compactor:
     # matchLabelKeys:
     #   - pod-template-hash
 
-  annotations: {}
+  # annotations: {}
 
   persistentVolume:
     # If true compactor will create/use a Persistent Volume Claim

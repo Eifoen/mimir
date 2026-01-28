@@ -5,8 +5,10 @@ metadata:
   name: {{ include "mimir.resourceName" (dict "ctx" . "component" "compactor") }}
   labels:
     {{- include "mimir.labels" (dict "ctx" . "component" "compactor" "memberlist" true) | nindent 4 }}
+  {{- with .Values.compactor.annotations }}
   annotations:
-    {{- toYaml .Values.compactor.annotations | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end}}
   namespace: {{ .Release.Namespace | quote }}
 spec:
   podManagementPolicy: {{ .Values.compactor.podManagementPolicy }}
@@ -153,12 +155,18 @@ spec:
             - name: memberlist
               containerPort: {{ include "mimir.memberlistBindPort" . }}
               protocol: TCP
+          {{- with .Values.compactor.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.compactor.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.compactor.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.compactor.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.compactor.resources }}
           resources:
-            {{- toYaml .Values.compactor.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.compactor.containerSecurityContext | nindent 12 }}
           {{- include "mimir.lib.containerEnv" (dict "ctx" . "component" "compactor") | nindent 10 }}
