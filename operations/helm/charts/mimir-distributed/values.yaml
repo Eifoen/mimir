@@ -560,7 +560,7 @@ alertmanager:
     # nodeTaintsPolicy: Honor
     # matchLabelKeys:
     #   - pod-template-hash
-  annotations: {}
+  # annotations: {}
   persistence:
     # SubPath in emptyDir for persistence, only enabled if alertmanager.statefulSet.enabled is false
     subPath:
