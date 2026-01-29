@@ -5,8 +5,10 @@ metadata:
   name: {{ include "mimir.resourceName" (dict "ctx" . "component" "ruler-querier") }}
   labels:
     {{- include "mimir.labels" (dict "ctx" . "component" "ruler-querier" "memberlist" true) | nindent 4 }}
+  {{- with .Values.ruler_querier.annotations }}
   annotations:
-    {{- toYaml .Values.ruler_querier.annotations | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end}}
   namespace: {{ .Release.Namespace | quote }}
 spec:
   {{- if or (not .Values.ruler_querier.kedaAutoscaling.enabled) (.Values.ruler_querier.kedaAutoscaling.preserveReplicas) }}
@@ -97,12 +99,18 @@ spec:
             - name: memberlist
               containerPort: {{ include "mimir.memberlistBindPort" . }}
               protocol: TCP
+          {{- with .Values.ruler_querier.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.ruler_querier.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ruler_querier.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.ruler_querier.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ruler_querier.resources }}
           resources:
-            {{- toYaml .Values.ruler_querier.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.ruler_querier.containerSecurityContext | nindent 12 }}
           {{- $defaultEnv := list }}

@@ -6,8 +6,10 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "mimir.labels" (dict "ctx" . "component" "ruler-query-scheduler") | nindent 4 }}
+  {{- with .Values.ruler_query_scheduler.annotations }}
   annotations:
-    {{- toYaml .Values.ruler_query_scheduler.annotations | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end}}
 spec:
   replicas: {{ .Values.ruler_query_scheduler.replicas }}
   {{- with .Values.ruler_query_scheduler.revisionHistoryLimit }}
@@ -77,12 +79,18 @@ spec:
             - name: grpc
               containerPort: {{ include "mimir.serverGrpcListenPort" . }}
               protocol: TCP
+          {{- with .Values.ruler_query_scheduler.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.ruler_query_scheduler.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ruler_query_scheduler.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.ruler_query_scheduler.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ruler_query_scheduler.resources }}
           resources:
-            {{- toYaml .Values.ruler_query_scheduler.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.ruler_query_scheduler.containerSecurityContext | nindent 12 }}
           {{- include "mimir.lib.containerEnv" (dict "ctx" . "component" "ruler-query-scheduler") | nindent 10 }}
