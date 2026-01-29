@@ -974,7 +974,7 @@ ingester:
     # matchLabelKeys:
     #   - pod-template-hash
 
-  annotations: {}
+  # annotations: {}
 
   persistentVolume:
     # If true and ingester.statefulSet.enabled is true,
@@ -990,7 +990,7 @@ ingester:
 
     # Ingester data Persistent Volume Claim annotations
     #
-    annotations: {}
+    # annotations: {}
 
     # Ingester data Persistent Volume access modes
     # Must match those of existing PV or dynamic provisioner
@@ -1021,7 +1021,7 @@ ingester:
     #
     # storageClass: "-"
 
-  livenessProbe: null
+  # livenessProbe: null
   readinessProbe:
     httpGet:
       path: /ready
