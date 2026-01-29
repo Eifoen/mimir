@@ -2,8 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  {{- with .Values.overrides_exporter.annotations }}
   annotations:
-    {{- toYaml .Values.overrides_exporter.annotations | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end}}
   labels:
     {{- include "mimir.labels" (dict "ctx" . "component" "overrides-exporter") | nindent 4 }}
   name: {{ include "mimir.resourceName" (dict "ctx" . "component" "overrides-exporter") }}
@@ -78,12 +80,18 @@ spec:
             - name: grpc
               containerPort: {{ include "mimir.serverGrpcListenPort" . }}
               protocol: TCP
+          {{- with .Values.overrides_exporter.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.overrides_exporter.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.overrides_exporter.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.overrides_exporter.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.overrides_exporter.resources }}
           resources:
-            {{- toYaml .Values.overrides_exporter.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.overrides_exporter.containerSecurityContext | nindent 12 }}
           {{- include "mimir.lib.containerEnv" (dict "ctx" . "component" "overrides-exporter") | nindent 10 -}}
