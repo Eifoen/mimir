@@ -5,8 +5,10 @@ metadata:
   name: {{ include "mimir.resourceName" (dict "ctx" . "component" "querier") }}
   labels:
     {{- include "mimir.labels" (dict "ctx" . "component" "querier" "memberlist" true) | nindent 4 }}
+  {{- with .Values.querier.annotations }}
   annotations:
-    {{- toYaml .Values.querier.annotations | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end}}
   namespace: {{ .Release.Namespace | quote }}
 spec:
   {{- if or (not .Values.querier.kedaAutoscaling.enabled) (.Values.querier.kedaAutoscaling.preserveReplicas) }}
@@ -97,12 +99,18 @@ spec:
             - name: memberlist
               containerPort: {{ include "mimir.memberlistBindPort" . }}
               protocol: TCP
+          {{- with .Values.querier.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.querier.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.querier.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.querier.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.querier.resources }}
           resources:
-            {{- toYaml .Values.querier.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.querier.containerSecurityContext | nindent 12 }}
           {{- $defaultEnv := list }}
