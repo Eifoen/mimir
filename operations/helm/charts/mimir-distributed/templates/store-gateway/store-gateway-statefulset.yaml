@@ -188,12 +188,18 @@ spec:
             - name: memberlist
               containerPort: {{ include "mimir.memberlistBindPort" . }}
               protocol: TCP
+          {{- with .Values.store_gateway.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.store_gateway.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.store_gateway.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.store_gateway.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.store_gateway.resources }}
           resources:
-            {{- toYaml .Values.store_gateway.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.store_gateway.containerSecurityContext | nindent 12 }}
           {{- $defaultEnv := list }}
