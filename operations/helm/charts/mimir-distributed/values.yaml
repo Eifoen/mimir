@@ -862,7 +862,7 @@ distributor:
     # matchLabelKeys:
     #   - pod-template-hash
 
-  annotations: {}
+  # annotations: {}
   persistence:
     subPath:
 

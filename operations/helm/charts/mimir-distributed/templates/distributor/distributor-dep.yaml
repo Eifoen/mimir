@@ -5,8 +5,10 @@ metadata:
   name: {{ include "mimir.resourceName" (dict "ctx" . "component" "distributor") }}
   labels:
     {{- include "mimir.labels" (dict "ctx" . "component" "distributor" "memberlist" true) | nindent 4 }}
+  {{- with .Values.distributor.annotations }}
   annotations:
-    {{- toYaml .Values.distributor.annotations | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end}}
   namespace: {{ .Release.Namespace | quote }}
 spec:
   {{- if or (not .Values.distributor.kedaAutoscaling.enabled) (.Values.distributor.kedaAutoscaling.preserveReplicas) }}
@@ -101,12 +103,18 @@ spec:
             - name: memberlist
               containerPort: {{ include "mimir.memberlistBindPort" . }}
               protocol: TCP
+          {{- with .Values.distributor.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.distributor.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.distributor.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.distributor.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.distributor.resources }}
           resources:
-            {{- toYaml .Values.distributor.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.distributor.containerSecurityContext | nindent 12 }}
           {{- $defaultEnv := list }}
